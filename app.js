@@ -1,4 +1,4 @@
-// Import Firebase SDK modules using ES module syntax
+// Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-storage.js";
 
@@ -16,19 +16,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-// Handle image upload
+// Handle file upload
 const uploadForm = document.getElementById('upload-form');
 const uploader = document.getElementById('uploader');
-const uploadedImg = document.getElementById('uploaded-img');
+const uploadedFileLink = document.getElementById('uploaded-file-link');
 
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     // Get the file
-    const file = document.getElementById('file').files[0];
+    const fileInput = document.getElementById('file');
+    const file = fileInput.files[0];
+
+    // Check if a file is selected
+    if (!file) {
+        console.error("No file selected.");
+        return;
+    }
 
     // Create a storage reference
-    const storageRef = ref(storage, 'images/' + file.name);
+    const storageRef = ref(storage, 'uploads/' + file.name);
 
     // Upload file
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -45,8 +52,30 @@ uploadForm.addEventListener('submit', (e) => {
         () => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                uploadedImg.src = downloadURL; // Display the uploaded image
+                displayFile(downloadURL, file);
             });
         }
     );
 });
+
+function displayFile(downloadURL, file) {
+    // Clear previous output
+    uploadedFileLink.innerHTML = '';
+
+    // Check the file type and display accordingly
+    const fileType = file.type;
+
+    if (fileType.startsWith('image/')) {
+        // Display image
+        uploadedFileLink.innerHTML = `<img src="${downloadURL}" alt="Uploaded Image">`;
+    } else if (fileType.startsWith('video/')) {
+        // Display video
+        uploadedFileLink.innerHTML = `<video src="${downloadURL}" controls></video>`;
+    } else if (fileType.startsWith('audio/')) {
+        // Display audio
+        uploadedFileLink.innerHTML = `<audio controls><source src="${downloadURL}" type="${fileType}">Your browser does not support the audio element.</audio>`;
+    } else {
+        // Provide a link for other file types (documents, etc.)
+        uploadedFileLink.innerHTML = `<a href="${downloadURL}" target="_blank">Download ${file.name}</a>`;
+    }
+}
