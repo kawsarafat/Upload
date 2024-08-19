@@ -115,3 +115,14 @@ window.addEventListener('click', (event) => {
         errorModal.style.display = "none";
     }
 });
+
+
+// Ensure modals are hidden on page load
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    successModal.style.display = "none";
+
+    errorModal.style.display = "none";
+
+});
