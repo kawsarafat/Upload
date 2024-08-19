@@ -30,40 +30,37 @@ body {
     position: relative; /* Required for positioning */
 }
 
-
-/* Progress Bar Container */
-.progress-container {
+/* Input field styling */
+input[type="file"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
     width: 100%;
-    max-width: 250px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    position: relative;
-    height: 30px;
+}
+
+/* Progress Bar Styling */
+progress {
+    width: 100%;
     margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/* Progress Bar */
-.progress-bar {
-    height: 100%;
-    background-color: #4caf50;
-    border-radius: 10px 0 0 10px;
-    transition: width 0.4s ease;
-    position: relative;
+progress::-webkit-progress-bar {
+    background-color: #f4f4f4;
 }
 
-/* Percentage Text */
-.progress-percentage {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    line-height: 30px;
+progress::-webkit-progress-value {
+    background-color: #28a745;
 }
 
+progress::-moz-progress-bar {
+    background-color: #28a745;
+}
 
 
 /* Modals */
