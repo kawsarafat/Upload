@@ -16,7 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-// Handle file upload
+// Select DOM elements
 const uploadForm = document.getElementById('upload-form');
 const uploader = document.getElementById('uploader');
 const uploadedFileLink = document.getElementById('uploaded-file-link');
@@ -24,6 +24,7 @@ const successModal = document.getElementById('success-modal');
 const errorModal = document.getElementById('error-modal');
 const closeBtns = document.querySelectorAll('.close-btn');
 
+// Handle form submission
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -67,6 +68,7 @@ uploadForm.addEventListener('submit', (e) => {
     );
 });
 
+// Function to display the uploaded file (image, video, audio, or link)
 function displayFile(downloadURL, file) {
     // Clear previous output
     uploadedFileLink.innerHTML = '';
@@ -76,10 +78,10 @@ function displayFile(downloadURL, file) {
 
     if (fileType.startsWith('image/')) {
         // Display image
-        uploadedFileLink.innerHTML = `<img src="${downloadURL}" alt="Uploaded Image">`;
+        uploadedFileLink.innerHTML = `<img src="${downloadURL}" alt="Uploaded Image" style="max-width: 100%; height: auto;">`;
     } else if (fileType.startsWith('video/')) {
         // Display video
-        uploadedFileLink.innerHTML = `<video src="${downloadURL}" controls></video>`;
+        uploadedFileLink.innerHTML = `<video src="${downloadURL}" controls style="max-width: 100%; height: auto;"></video>`;
     } else if (fileType.startsWith('audio/')) {
         // Display audio
         uploadedFileLink.innerHTML = `<audio controls><source src="${downloadURL}" type="${fileType}">Your browser does not support the audio element.</audio>`;
@@ -89,12 +91,14 @@ function displayFile(downloadURL, file) {
     }
 }
 
+// Function to display the success modal with the file name
 function displaySuccessModal(fileName) {
     const modalMessageSuccess = document.getElementById('modal-message-success');
     modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
     successModal.style.display = "block";  // Show the success modal
 }
 
+// Function to display the error modal with the error message
 function displayErrorModal(errorMessage) {
     const modalMessageError = document.getElementById('modal-message-error');
     modalMessageError.textContent = `Error: ${errorMessage}`;
