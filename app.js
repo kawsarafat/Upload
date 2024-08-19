@@ -24,9 +24,15 @@ const successModal = document.getElementById('success-modal');
 const errorModal = document.getElementById('error-modal');
 const closeBtns = document.querySelectorAll('.close-btn');
 
+// Keep track of upload state
+let uploadAttempted = false;
+
 // Handle form submission
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Set uploadAttempted to true when an upload is attempted
+    uploadAttempted = true;
 
     // Get the file
     const fileInput = document.getElementById('file');
@@ -95,14 +101,18 @@ function displayFile(downloadURL, file) {
 function displaySuccessModal(fileName) {
     const modalMessageSuccess = document.getElementById('modal-message-success');
     modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
-    successModal.style.display = "block";  // Show the success modal
+    if (uploadAttempted) {
+        successModal.style.display = "block";  // Show the success modal
+    }
 }
 
 // Function to display the error modal with the error message
 function displayErrorModal(errorMessage) {
     const modalMessageError = document.getElementById('modal-message-error');
     modalMessageError.textContent = `Error: ${errorMessage}`;
-    errorModal.style.display = "block";  // Show the error modal
+    if (uploadAttempted) {
+        errorModal.style.display = "block";  // Show the error modal
+    }
 }
 
 // Close the modals when the user clicks on the close buttons
