@@ -30,6 +30,30 @@ const closeBtns = document.querySelectorAll('.close-btn');
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
 
+// Handle form submission
+
+uploadForm.addEventListener('submit', (e) => {
+
+    e.preventDefault();
+
+
+
+    // Reset flags
+
+    showSuccessModal = false;
+
+    showErrorModal = false;
+
+
+
+    // Get the file
+
+    const fileInput = document.getElementById('file');
+
+    const file = fileInput.files[0];
+
+
+    
     if (!file) {
         console.error("No file selected.");
         showErrorModal = true;
