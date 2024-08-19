@@ -191,7 +191,7 @@ progress::-moz-progress-bar {
   transition: color .2s ease-in-out;
 }
 
-#file-input {
+#file {
   width: 350px;
   max-width: 100%;
   color: #444;
@@ -201,7 +201,7 @@ progress::-moz-progress-bar {
   border: 1px solid rgba(8, 8, 8, 0.288);
 }
 
-#file-input::file-selector-button {
+#file::file-selector-button {
   margin-right: 20px;
   border: none;
   background: #084cdf;
@@ -212,6 +212,6 @@ progress::-moz-progress-bar {
   transition: background .2s ease-in-out;
 }
 
-#file-input::file-selector-button:hover {
+#file::file-selector-button:hover {
   background: #0d45a5;
 }
