@@ -20,6 +20,8 @@ const storage = getStorage(app);
 const uploadForm = document.getElementById('upload-form');
 const uploader = document.getElementById('uploader');
 const uploadedFileLink = document.getElementById('uploaded-file-link');
+const modal = document.getElementById('success-modal');
+const closeModalBtn = document.querySelector('.close-btn');
 
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -53,7 +55,7 @@ uploadForm.addEventListener('submit', (e) => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
-                displaySuccessMessage(file.name);  // Display success message
+                displaySuccessModal(file.name);  // Show modal on success
             });
         }
     );
@@ -81,11 +83,20 @@ function displayFile(downloadURL, file) {
     }
 }
 
-function displaySuccessMessage(fileName) {
-    // Display a success message to the user
-    const successMessage = document.createElement('p');
-    successMessage.textContent = `File "${fileName}" uploaded successfully!`;
-    successMessage.style.color = 'green';
-    successMessage.style.marginTop = '20px';
-    uploadedFileLink.appendChild(successMessage);
+function displaySuccessModal(fileName) {
+    const modalMessage = document.getElementById('modal-message');
+    modalMessage.textContent = `File "${fileName}" uploaded successfully!`;
+    modal.style.display = "block";  // Show the modal
 }
+
+// Close the modal when the user clicks on the close button
+closeModalBtn.addEventListener('click', () => {
+    modal.style.display = "none";
+});
+
+// Close the modal when the user clicks outside of the modal
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
