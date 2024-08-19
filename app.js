@@ -61,10 +61,12 @@ fileInput.addEventListener('change', (e) => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
+                showSuccessModal = true;
                 displaySuccessModal(file.name);  // Show success modal
                 progressBar.style.display = 'none'; // Hide progress bar after success
             }).catch((error) => {
                 console.error('Failed to get download URL:', error);
+                showErrorModal = true;
                 displayErrorModal(error.message);  // Show error modal if URL retrieval fails
                 progressBar.style.display = 'none'; // Hide progress bar on error
             });
