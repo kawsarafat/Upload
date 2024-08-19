@@ -34,7 +34,7 @@ body {
 /* Progress Bar Container */
 .progress-container {
     width: 100%;
-    max-width: 300px;
+    max-width: 250px;
     background-color: #e0e0e0;
     border-radius: 10px;
     position: relative;
