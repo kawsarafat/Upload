@@ -18,26 +18,35 @@ const storage = getStorage(app);
 
 // Select DOM elements
 const uploadForm = document.getElementById('upload-form');
-const fileInput = document.getElementById('file');
-const progressBar = document.getElementById('progress-bar');
-const progressPercentage = document.getElementById('progress-percentage');
+const uploader = document.getElementById('uploader');
 const uploadedFileLink = document.getElementById('uploaded-file-link');
 const successModal = document.getElementById('success-modal');
 const errorModal = document.getElementById('error-modal');
 const closeBtns = document.querySelectorAll('.close-btn');
 
-// Handle file upload automatically
-fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
+// Flags to handle modal display
+let showSuccessModal = false;
+let showErrorModal = false;
 
+// Handle form submission
+uploadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Reset flags
+    showSuccessModal = false;
+    showErrorModal = false;
+
+    // Get the file
+    const fileInput = document.getElementById('file');
+    const file = fileInput.files[0];
+
+    // Check if a file is selected
     if (!file) {
         console.error("No file selected.");
+        showErrorModal = true;
         displayErrorModal("No file selected.");
         return;
     }
-
-    // Show progress bar
-    progressBar.style.display = 'block';
 
     // Create a storage reference
     const storageRef = ref(storage, 'uploads/' + file.name);
@@ -49,57 +58,70 @@ fileInput.addEventListener('change', (e) => {
     uploadTask.on('state_changed',
         (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressPercentage.textContent = `${Math.floor(progress)}%`;
+            uploader.value = progress;
         },
         (error) => {
             console.error('Upload failed:', error);
+            showErrorModal = true;
             displayErrorModal(error.message);  // Show error modal
-            progressBar.style.display = 'none'; // Hide progress bar on error
         },
         () => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
+                showSuccessModal = true;
                 displaySuccessModal(file.name);  // Show success modal
-                progressBar.style.display = 'none'; // Hide progress bar after success
             }).catch((error) => {
                 console.error('Failed to get download URL:', error);
+                showErrorModal = true;
                 displayErrorModal(error.message);  // Show error modal if URL retrieval fails
-                progressBar.style.display = 'none'; // Hide progress bar on error
             });
         }
     );
 });
 
+// Function to display the uploaded file (image, video, audio, or link)
 function displayFile(downloadURL, file) {
+    // Clear previous output
     uploadedFileLink.innerHTML = '';
 
+    // Check the file type and display accordingly
     const fileType = file.type;
 
     if (fileType.startsWith('image/')) {
+        // Display image
         uploadedFileLink.innerHTML = `<img src="${downloadURL}" alt="Uploaded Image" style="max-width: 100%; height: auto;">`;
     } else if (fileType.startsWith('video/')) {
+        // Display video
         uploadedFileLink.innerHTML = `<video src="${downloadURL}" controls style="max-width: 100%; height: auto;"></video>`;
     } else if (fileType.startsWith('audio/')) {
+        // Display audio
         uploadedFileLink.innerHTML = `<audio controls><source src="${downloadURL}" type="${fileType}">Your browser does not support the audio element.</audio>`;
     } else {
+        // Provide a link for other file types (documents, etc.)
         uploadedFileLink.innerHTML = `<a href="${downloadURL}" target="_blank">Download ${file.name}</a>`;
     }
 }
 
+// Function to display the success modal with the file name
 function displaySuccessModal(fileName) {
-    const modalMessageSuccess = document.getElementById('modal-message-success');
-    modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
-    successModal.style.display = "block";  // Show the success modal
+    if (showSuccessModal) {
+        const modalMessageSuccess = document.getElementById('modal-message-success');
+        modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
+        successModal.style.display = "block";  // Show the success modal
+    }
 }
 
+// Function to display the error modal with the error message
 function displayErrorModal(errorMessage) {
-    const modalMessageError = document.getElementById('modal-message-error');
-    modalMessageError.textContent = `Error: ${errorMessage}`;
-    errorModal.style.display = "block";  // Show the error modal
+    if (showErrorModal) {
+        const modalMessageError = document.getElementById('modal-message-error');
+        modalMessageError.textContent = `Error: ${errorMessage}`;
+        errorModal.style.display = "block";  // Show the error modal
+    }
 }
 
+// Close the modals when the user clicks on the close buttons
 closeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         successModal.style.display = "none";
@@ -107,6 +129,7 @@ closeBtns.forEach(btn => {
     });
 });
 
+// Close the modals when the user clicks outside of the modal
 window.addEventListener('click', (event) => {
     if (event.target == successModal) {
         successModal.style.display = "none";
@@ -114,4 +137,10 @@ window.addEventListener('click', (event) => {
     if (event.target == errorModal) {
         errorModal.style.display = "none";
     }
+});
+
+// Ensure modals are hidden on page load
+document.addEventListener('DOMContentLoaded', () => {
+    successModal.style.display = "none";
+    errorModal.style.display = "none";
 });
