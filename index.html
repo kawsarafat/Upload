@@ -8,11 +8,20 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload File</h1>
-        <form id="upload-form">
-            <input type="file" id="file" />
-            <button type="submit">Upload</button>
-        </form>
+        
+        <form class="form">
+  <span class="form-title">Upload your file</span>
+  <p class="form-paragraph">
+      File should be an image
+    </p>
+   <label for="file-input" class="drop-container">
+  <span class="drop-title">Drop files here</span>
+  or
+  <input type="file" accept="image/*" required="" id="file-input">
+</label>
+</form>
+
+        
         <progress value="0" max="100" id="uploader">0%</progress>
         <div id="uploaded-file-link"></div>
     </div>
