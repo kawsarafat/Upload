@@ -175,7 +175,7 @@ progress::-moz-progress-bar {
 }
 
 .drop-container:hover {
-  background: rgba(0, 140, 255, 0.164);
+  background: rgba(0, 140, 255, 0.104);
   border-color: rgba(17, 17, 17, 0.616);
 }
 
