@@ -53,6 +53,7 @@ uploadForm.addEventListener('submit', (e) => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
+                displaySuccessMessage(file.name);  // Display success message
             });
         }
     );
@@ -78,4 +79,13 @@ function displayFile(downloadURL, file) {
         // Provide a link for other file types (documents, etc.)
         uploadedFileLink.innerHTML = `<a href="${downloadURL}" target="_blank">Download ${file.name}</a>`;
     }
+}
+
+function displaySuccessMessage(fileName) {
+    // Display a success message to the user
+    const successMessage = document.createElement('p');
+    successMessage.textContent = `File "${fileName}" uploaded successfully!`;
+    successMessage.style.color = 'green';
+    successMessage.style.marginTop = '20px';
+    uploadedFileLink.appendChild(successMessage);
 }
