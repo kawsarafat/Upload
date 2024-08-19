@@ -61,12 +61,10 @@ fileInput.addEventListener('change', (e) => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
-                showSuccessModal = true;
                 displaySuccessModal(file.name);  // Show success modal
                 progressBar.style.display = 'none'; // Hide progress bar after success
             }).catch((error) => {
                 console.error('Failed to get download URL:', error);
-                showErrorModal = true;
                 displayErrorModal(error.message);  // Show error modal if URL retrieval fails
                 progressBar.style.display = 'none'; // Hide progress bar on error
             });
@@ -91,16 +89,20 @@ function displayFile(downloadURL, file) {
 }
 
 function displaySuccessModal(fileName) {
-    const modalMessageSuccess = document.getElementById('modal-message-success');
-    modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
-    successModal.style.display = "block";  // Show the success modal
-}
+    if (showSuccessModal) {
+        const modalMessageSuccess = document.getElementById('modal-message-success');
+        modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
+        successModal.style.display = "block";  // Show the success modal
+    }
+
 
 function displayErrorModal(errorMessage) {
-    const modalMessageError = document.getElementById('modal-message-error');
-    modalMessageError.textContent = `Error: ${errorMessage}`;
-    errorModal.style.display = "block";  // Show the error modal
-}
+    if (showErrorModal) {
+        const modalMessageError = document.getElementById('modal-message-error');
+        modalMessageError.textContent = `Error: ${errorMessage}`;
+        errorModal.style.display = "block";  // Show the error modal
+    }
+
 
 closeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -118,13 +120,8 @@ window.addEventListener('click', (event) => {
     }
 });
 
-
 // Ensure modals are hidden on page load
-
 document.addEventListener('DOMContentLoaded', () => {
-
     successModal.style.display = "none";
-
     errorModal.style.display = "none";
-
 });
