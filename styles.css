@@ -21,7 +21,7 @@ body {
 /* Centering the Container */
 .container {
     width: 100%;
-    max-width: 500px;
+    max-width: 350px;
     padding: 2rem .7rem .7rem .7rem;
     background-color: #fff;
     border-radius: 20px;
