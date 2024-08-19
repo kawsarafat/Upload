@@ -32,6 +32,7 @@ fileInput.addEventListener('change', (e) => {
 
     if (!file) {
         console.error("No file selected.");
+        showErrorModal = true;
         displayErrorModal("No file selected.");
         return;
     }
@@ -54,6 +55,7 @@ fileInput.addEventListener('change', (e) => {
         },
         (error) => {
             console.error('Upload failed:', error);
+            showErrorModal = true;
             displayErrorModal(error.message);  // Show error modal
             progressBar.style.display = 'none'; // Hide progress bar on error
         },
@@ -96,6 +98,7 @@ function displaySuccessModal(fileName) {
         modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
         successModal.style.display = "block";  // Show the success modal
     }
+}
 
 
 function displayErrorModal(errorMessage) {
