@@ -24,15 +24,17 @@ const successModal = document.getElementById('success-modal');
 const errorModal = document.getElementById('error-modal');
 const closeBtns = document.querySelectorAll('.close-btn');
 
-// Keep track of upload state
-let uploadAttempted = false;
+// Flags to handle modal display
+let showSuccessModal = false;
+let showErrorModal = false;
 
 // Handle form submission
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Set uploadAttempted to true when an upload is attempted
-    uploadAttempted = true;
+    // Reset flags
+    showSuccessModal = false;
+    showErrorModal = false;
 
     // Get the file
     const fileInput = document.getElementById('file');
@@ -41,6 +43,7 @@ uploadForm.addEventListener('submit', (e) => {
     // Check if a file is selected
     if (!file) {
         console.error("No file selected.");
+        showErrorModal = true;
         displayErrorModal("No file selected.");
         return;
     }
@@ -59,15 +62,18 @@ uploadForm.addEventListener('submit', (e) => {
         },
         (error) => {
             console.error('Upload failed:', error);
+            showErrorModal = true;
             displayErrorModal(error.message);  // Show error modal
         },
         () => {
             // Upload completed successfully, now get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 displayFile(downloadURL, file);
+                showSuccessModal = true;
                 displaySuccessModal(file.name);  // Show success modal
             }).catch((error) => {
                 console.error('Failed to get download URL:', error);
+                showErrorModal = true;
                 displayErrorModal(error.message);  // Show error modal if URL retrieval fails
             });
         }
@@ -99,18 +105,18 @@ function displayFile(downloadURL, file) {
 
 // Function to display the success modal with the file name
 function displaySuccessModal(fileName) {
-    const modalMessageSuccess = document.getElementById('modal-message-success');
-    modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
-    if (uploadAttempted) {
+    if (showSuccessModal) {
+        const modalMessageSuccess = document.getElementById('modal-message-success');
+        modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
         successModal.style.display = "block";  // Show the success modal
     }
 }
 
 // Function to display the error modal with the error message
 function displayErrorModal(errorMessage) {
-    const modalMessageError = document.getElementById('modal-message-error');
-    modalMessageError.textContent = `Error: ${errorMessage}`;
-    if (uploadAttempted) {
+    if (showErrorModal) {
+        const modalMessageError = document.getElementById('modal-message-error');
+        modalMessageError.textContent = `Error: ${errorMessage}`;
         errorModal.style.display = "block";  // Show the error modal
     }
 }
@@ -131,4 +137,10 @@ window.addEventListener('click', (event) => {
     if (event.target == errorModal) {
         errorModal.style.display = "none";
     }
+});
+
+// Ensure modals are hidden on page load
+document.addEventListener('DOMContentLoaded', () => {
+    successModal.style.display = "none";
+    errorModal.style.display = "none";
 });
