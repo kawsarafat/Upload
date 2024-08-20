@@ -27,14 +27,6 @@ const closeBtns = document.querySelectorAll('.close-btn');
 let showSuccessModal = false;
 let showErrorModal = false;
 
-// Hide progress bar on page load
-document.addEventListener('DOMContentLoaded', () => {
-    uploader.value = 0; // Reset progress bar value
-    uploader.style.display = 'none'; // Hide progress bar
-    successModal.style.display = "none"; // Hide success modal
-    errorModal.style.display = "none"; // Hide error modal
-});
-
 // Handle file selection
 const fileInput = document.getElementById('file');
 fileInput.addEventListener('change', (e) => {
@@ -53,9 +45,6 @@ fileInput.addEventListener('change', (e) => {
         return;
     }
 
-    // Show progress bar
-    uploader.style.display = 'block';
-
     // Create a storage reference
     const storageRef = ref(storage, 'uploads/' + file.name);
 
@@ -72,7 +61,6 @@ fileInput.addEventListener('change', (e) => {
             console.error('Upload failed:', error);
             showErrorModal = true;
             displayErrorModal(error.message);  // Show error modal
-            uploader.style.display = 'none'; // Hide progress bar on error
         },
         () => {
             // Upload completed successfully, now get the download URL
@@ -80,12 +68,10 @@ fileInput.addEventListener('change', (e) => {
                 displayFile(downloadURL, file);
                 showSuccessModal = true;
                 displaySuccessModal(file.name);  // Show success modal
-                uploader.style.display = 'none'; // Hide progress bar after success
             }).catch((error) => {
                 console.error('Failed to get download URL:', error);
                 showErrorModal = true;
                 displayErrorModal(error.message);  // Show error modal if URL retrieval fails
-                uploader.style.display = 'none'; // Hide progress bar on error
             });
         }
     );
@@ -148,4 +134,10 @@ window.addEventListener('click', (event) => {
     if (event.target == errorModal) {
         errorModal.style.display = "none";
     }
+});
+
+// Ensure modals are hidden on page load
+document.addEventListener('DOMContentLoaded', () => {
+    successModal.style.display = "none";
+    errorModal.style.display = "none";
 });
