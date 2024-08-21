@@ -97,6 +97,39 @@ fileInput.addEventListener('change', (e) => {
 
 
 // Function to display the uploaded file (image, video, audio, or link)
+async function createShortIoLink(longUrl) {
+    const apiKey = 'pk_OWheBUKROk7TL0nY'; // Your Short.io API key
+    const requestUrl = 'https://api.short.io/links';
+
+    const requestBody = {
+        originalURL: longUrl,
+        domain: 'eaf4.short.gy' // Replace with your Short.io domain (e.g., yourdomain.com)
+    };
+
+    try {
+        const response = await fetch(requestUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': apiKey
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+
+        if (data.shortURL) {
+            return data.shortURL;
+        } else {
+            console.error('Error creating short link:', data);
+            return longUrl; // Return the original URL if shortening fails
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return longUrl; // Return the original URL if there's an error
+    }
+}
+
 async function displayFile(downloadURL, file) {
     // Clear previous output
     uploadedFileLink.innerHTML = '';
@@ -105,33 +138,13 @@ async function displayFile(downloadURL, file) {
     const container = document.createElement('div');
     container.className = 'copy-url-button';
 
-    // Function to shorten the URL using Cutt.ly API
-    async function shortenURL(url) {
-        const apiKey = 'f242d5828c581fdc815f9967667e0bb5'; // Replace with your Cutt.ly API key
-        const apiUrl = `https://cutt.ly/api/api.php?key=${apiKey}&short=${url}`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            if (data.url.status === 7) {
-                return data.url.shortLink;
-            } else {
-                console.error('Error shortening URL:', data.url.title);
-                return url; // Return original URL if shortening fails
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            return url; // Return original URL if there's an error
-        }
-    }
-
-    // Get the shortened URL
-    const shortenedURL = await shortenURL(downloadURL);
+    // Create the short link
+    const shortLink = await createShortIoLink(downloadURL);
 
     // Create the span for the shortened URL
     const urlSpan = document.createElement('span');
     urlSpan.className = 'download-url';
-    urlSpan.textContent = shortenedURL;
+    urlSpan.textContent = shortLink;
 
     // Create the copy button
     const copyButton = document.createElement('button');
@@ -139,9 +152,9 @@ async function displayFile(downloadURL, file) {
     copyButton.type = 'button';
     copyButton.id = 'copyButton';
 
-    // Add event listener to copy the shortened URL
+    // Add event listener to copy the short link
     copyButton.addEventListener('click', function() {
-        navigator.clipboard.writeText(shortenedURL).then(() => {
+        navigator.clipboard.writeText(shortLink).then(() => {
             copyButton.textContent = 'Copied'; // Change button text
             setTimeout(() => {
                 copyButton.textContent = 'Copy'; // Revert to original text after 2 seconds
@@ -151,8 +164,8 @@ async function displayFile(downloadURL, file) {
         });
     });
 
-    // Append the elements to the container only if there's a shortened URL
-    if (shortenedURL) {
+    // Append the elements to the container only if there's a short link
+    if (shortLink) {
         container.appendChild(urlSpan);
         container.appendChild(copyButton);
         uploadedFileLink.appendChild(container);
