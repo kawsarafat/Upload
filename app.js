@@ -91,28 +91,56 @@ fileInput.addEventListener('change', (e) => {
     );
 });
 
+
+
+
+
+
 // Function to display the uploaded file (image, video, audio, or link)
 function displayFile(downloadURL, file) {
     // Clear previous output
     uploadedFileLink.innerHTML = '';
 
-    // Check the file type and display accordingly
-    const fileType = file.type;
+    // Create the copy button container
+    const container = document.createElement('div');
+    container.className = 'copy-url-button';
 
-    if (fileType.startsWith('image/')) {
-        // Display image
-        uploadedFileLink.innerHTML = `<img src="${downloadURL}" alt="Uploaded Image" style="max-width: 100%; height: auto;">`;
-    } else if (fileType.startsWith('video/')) {
-        // Display video
-        uploadedFileLink.innerHTML = `<video src="${downloadURL}" controls style="max-width: 100%; height: auto;"></video>`;
-    } else if (fileType.startsWith('audio/')) {
-        // Display audio
-        uploadedFileLink.innerHTML = `<audio controls><source src="${downloadURL}" type="${fileType}">Your browser does not support the audio element.</audio>`;
+    // Create the span for downloadURL
+    const urlSpan = document.createElement('span');
+    urlSpan.className = 'download-url';
+    urlSpan.textContent = downloadURL;
+
+    // Create the copy button
+    const copyButton = document.createElement('button');
+    copyButton.textContent = 'Copy';
+    copyButton.type = 'button';
+    copyButton.id = 'copyButton';
+
+    // Add event listener to copy the URL
+    copyButton.addEventListener('click', function() {
+        navigator.clipboard.writeText(downloadURL).then(() => {
+            copyButton.textContent = 'Copied'; // Change button text
+            setTimeout(() => {
+                copyButton.textContent = 'Copy'; // Revert to original text after 2 seconds
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    });
+
+    // Append the elements to the container only if there's a download URL
+    if (downloadURL) {
+        container.appendChild(urlSpan);
+        container.appendChild(copyButton);
+        uploadedFileLink.appendChild(container);
+        container.style.display = 'flex'; // Show the container
     } else {
-        // Provide a link for other file types (documents, etc.)
-        uploadedFileLink.innerHTML = `<a href="${downloadURL}" target="_blank">Download ${file.name}</a>`;
+        container.style.display = 'none'; // Hide the container if no URL
     }
 }
+
+
+
 
 // Function to display the success modal with the file name
 function displaySuccessModal(fileName) {
