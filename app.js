@@ -4,12 +4,12 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://w
 
 // Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBAPrtfonDefpDlfCwQ_smWnVjwpL5rh6I",
-    authDomain: "upload-af09a.firebaseapp.com",
-    projectId: "upload-af09a",
-    storageBucket: "upload-af09a.appspot.com",
-    messagingSenderId: "120721801820",
-    appId: "1:120721801820:web:818cf5f6fab789f8e71c99"
+    apiKey: "AIzaSyAwBCRuY2xVwYwwj7CkQS4K0_U3fUFZbQ0",
+    authDomain: "website-test-2022.firebaseapp.com",
+    projectId: "website-test-2022",
+    storageBucket: "website-test-2022.appspot.com",
+    messagingSenderId: "420972701466",
+    appId: "1:420972701466:web:a4063b695212efcb8deea3"
 };
 
 // Initialize Firebase
