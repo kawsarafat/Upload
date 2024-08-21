@@ -215,6 +215,7 @@ progress::-moz-progress-bar {
 
 /* Success Modal */
 #success-modal .modal-content {
+    z-index: 1
     border: 1px solid #28a745;
 }
 
