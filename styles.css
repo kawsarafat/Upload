@@ -130,6 +130,52 @@ progress::-moz-progress-bar {
 
 
 
+.copy-url-button {
+    display: none;            /* Hide by default */
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f9ff; /* Light grey background */
+    border: 1px solid #ccc;    /* Light grey border */
+    border-radius: 8px;        /* Rounded corners */
+    padding: 9px 12px;        /* Some padding */
+    width: 100%;               /* Full width */
+    box-sizing: border-box;    /* Include padding in width */
+}
+
+.download-url {
+    flex-grow: 1;
+    color: #333;               /* Dark grey text */
+    font-size: 14px;           /* Adjust font size */
+    overflow: hidden;          /* Hide overflow if too long */
+    text-overflow: ellipsis;   /* Add ellipsis for long URLs */
+    white-space: nowrap;       /* Prevent text from wrapping */
+    margin-right: 10px;        /* Space between URL and button */
+}
+
+.copy-url-button button {
+    background-color: #ff5eac; /* Green background */
+    border: none;              /* Remove borders */
+    color: white;              /* White text */
+    padding: 8px 16px;         /* Some padding */
+    text-align: center;        /* Center the text */
+    font-size: 14px;           /* Set a default font size */
+    font-weight: semi-bold;         /* Make the text bold */
+    border-radius: 8px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer/hand icon on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+.copy-url-button button:hover {
+    background-color: red; /* Darker green on hover */
+    transform: scale(1.05);    /* Slightly enlarge on hover */
+}
+
+.copy-url-button button:active {
+    background-color: #397d3b; /* Even darker green when clicked */
+    transform: scale(1);       /* Reset the scale */
+}
+
+
 
 
 
@@ -204,7 +250,7 @@ progress::-moz-progress-bar {
 #file::file-selector-button {
   margin-right: 20px;
   border: none;
-  background: #008cff;
+  background: #0077ff;
   padding: 10px 20px;
   border-radius: 10px;
   color: #fff;
@@ -213,5 +259,5 @@ progress::-moz-progress-bar {
 }
 
 #file::file-selector-button:hover {
-  background: #0d45a5;
+  background: #0011ff;
 }
