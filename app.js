@@ -98,12 +98,12 @@ fileInput.addEventListener('change', (e) => {
 
 // Function to display the uploaded file (image, video, audio, or link)
 async function createShortIoLink(longUrl) {
-    const apiKey = 'pk_OWheBUKROk7TL0nY'; // Your Short.io API key
+    const apiKey = 'pk_5pVKGKwlPanvglod'; // Your Short.io API key
     const requestUrl = 'https://api.short.io/links/public';
 
     const requestBody = {
         originalURL: longUrl,
-        domain: 'eaf4.short.gy' // Your Short.io domain
+        domain: 'go.kawsarafat.com' // Your Short.io domain
     };
 
     try {
