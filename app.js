@@ -97,7 +97,7 @@ fileInput.addEventListener('change', (e) => {
 
 
 // Function to display the uploaded file (image, video, audio, or link)
-function displayFile(downloadURL, file) {
+async function displayFile(downloadURL, file) {
     // Clear previous output
     uploadedFileLink.innerHTML = '';
 
@@ -105,11 +105,28 @@ function displayFile(downloadURL, file) {
     const container = document.createElement('div');
     container.className = 'copy-url-button';
 
-    // Create a shortened version of the download URL
-    const maxLength = 30; // Maximum length of the shortened URL
-    const shortenedURL = downloadURL.length > maxLength 
-        ? downloadURL.slice(0, maxLength) + '...' 
-        : downloadURL;
+    // Function to shorten the URL using Cutt.ly API
+    async function shortenURL(url) {
+        const apiKey = 'f242d5828c581fdc815f9967667e0bb5'; // Replace with your Cutt.ly API key
+        const apiUrl = `https://cutt.ly/api/api.php?key=${apiKey}&short=${url}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            if (data.url.status === 7) {
+                return data.url.shortLink;
+            } else {
+                console.error('Error shortening URL:', data.url.title);
+                return url; // Return original URL if shortening fails
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return url; // Return original URL if there's an error
+        }
+    }
+
+    // Get the shortened URL
+    const shortenedURL = await shortenURL(downloadURL);
 
     // Create the span for the shortened URL
     const urlSpan = document.createElement('span');
@@ -122,9 +139,9 @@ function displayFile(downloadURL, file) {
     copyButton.type = 'button';
     copyButton.id = 'copyButton';
 
-    // Add event listener to copy the full URL
+    // Add event listener to copy the shortened URL
     copyButton.addEventListener('click', function() {
-        navigator.clipboard.writeText(downloadURL).then(() => {
+        navigator.clipboard.writeText(shortenedURL).then(() => {
             copyButton.textContent = 'Copied'; // Change button text
             setTimeout(() => {
                 copyButton.textContent = 'Copy'; // Revert to original text after 2 seconds
@@ -134,8 +151,8 @@ function displayFile(downloadURL, file) {
         });
     });
 
-    // Append the elements to the container only if there's a download URL
-    if (downloadURL) {
+    // Append the elements to the container only if there's a shortened URL
+    if (shortenedURL) {
         container.appendChild(urlSpan);
         container.appendChild(copyButton);
         uploadedFileLink.appendChild(container);
