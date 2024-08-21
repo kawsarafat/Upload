@@ -105,10 +105,16 @@ function displayFile(downloadURL, file) {
     const container = document.createElement('div');
     container.className = 'copy-url-button';
 
-    // Create the span for downloadURL
+    // Create a shortened version of the download URL
+    const maxLength = 30; // Maximum length of the shortened URL
+    const shortenedURL = downloadURL.length > maxLength 
+        ? downloadURL.slice(0, maxLength) + '...' 
+        : downloadURL;
+
+    // Create the span for the shortened URL
     const urlSpan = document.createElement('span');
     urlSpan.className = 'download-url';
-    urlSpan.textContent = downloadURL;
+    urlSpan.textContent = shortenedURL;
 
     // Create the copy button
     const copyButton = document.createElement('button');
@@ -116,7 +122,7 @@ function displayFile(downloadURL, file) {
     copyButton.type = 'button';
     copyButton.id = 'copyButton';
 
-    // Add event listener to copy the URL
+    // Add event listener to copy the full URL
     copyButton.addEventListener('click', function() {
         navigator.clipboard.writeText(downloadURL).then(() => {
             copyButton.textContent = 'Copied'; // Change button text
@@ -138,6 +144,11 @@ function displayFile(downloadURL, file) {
         container.style.display = 'none'; // Hide the container if no URL
     }
 }
+
+
+
+
+
 
 
 
