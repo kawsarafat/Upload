@@ -8,33 +8,45 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
+    
+    <!-- Header Section -->
+    <header>
+        <nav class="navbar">
+            <div class="brand-title">Digital Porasona</div>
+            <a href="javascript:void(0);" class="toggle-button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </a>
+            <div class="navbar-links">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-        
+    <!-- Main Content -->
     <div class="container">
         <h1 class="form-title">Upload your file</h1>
-          <p class="form-paragraph">File can be any type</p>
+        <p class="form-paragraph">File can be any type</p>
         <form id="upload-form">
-
-            
-             <label for="file" class="drop-container">
-  <span class="drop-title">Drop files here</span>
-  or
-                 
-            <input type="file" id="file" />
-
-                 </label>
+            <label for="file" class="drop-container">
+                <span class="drop-title">Drop files here</span>
+                or
+                <input type="file" id="file" />
+            </label>
         </form>
         <progress value="0" max="100" id="uploader">0%</progress>
         <div id="uploaded-file-link"></div>
 
-
-<div class="copy-url-button">
-    <span class="download-url"></span>
-    <button type="button" id="copyButton">Copy</button>
-</div>
-
-
-        
+        <div class="copy-url-button">
+            <span class="download-url"></span>
+            <button type="button" id="copyButton">Copy</button>
+        </div>
     </div>
 
     <!-- Success Modal Structure -->
@@ -52,6 +64,11 @@
             <p id="modal-message-error">File upload failed!</p>
         </div>
     </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Digital Porasona. All rights reserved.</p>
+    </footer>
 
     <!-- Include the JavaScript file -->
     <script type="module" src="app.js"></script>
