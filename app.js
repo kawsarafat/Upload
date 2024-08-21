@@ -99,11 +99,11 @@ fileInput.addEventListener('change', (e) => {
 // Function to display the uploaded file (image, video, audio, or link)
 async function createShortIoLink(longUrl) {
     const apiKey = 'pk_OWheBUKROk7TL0nY'; // Your Short.io API key
-    const requestUrl = 'https://api.short.io/links';
+    const requestUrl = 'https://api.short.io/links/public';
 
     const requestBody = {
         originalURL: longUrl,
-        domain: 'eaf4.short.gy' // Replace with your Short.io domain (e.g., yourdomain.com)
+        domain: 'eaf4.short.gy' // Your Short.io domain
     };
 
     try {
@@ -174,7 +174,6 @@ async function displayFile(downloadURL, file) {
         container.style.display = 'none'; // Hide the container if no URL
     }
 }
-
 
 
 
