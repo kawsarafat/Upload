@@ -1,185 +1,263 @@
-// Import Firebase SDK modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-storage.js";
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-// Your Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBAPrtfonDefpDlfCwQ_smWnVjwpL5rh6I",
-    authDomain: "upload-af09a.firebaseapp.com",
-    projectId: "upload-af09a",
-    storageBucket: "upload-af09a.appspot.com",
-    messagingSenderId: "120721801820",
-    appId: "1:120721801820:web:818cf5f6fab789f8e71c99"
-};
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height to center content */
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
+/* Centering the Container */
+.container {
+    width: 100%;
+    max-width: 350px;
+    padding: 2rem .7rem .7rem .7rem;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative; /* Required for positioning */
+}
 
-// Select DOM elements
-const uploader = document.getElementById('uploader');
-const uploadedFileLink = document.getElementById('uploaded-file-link');
-const successModal = document.getElementById('success-modal');
-const errorModal = document.getElementById('error-modal');
-const closeBtns = document.querySelectorAll('.close-btn');
+/* Input field styling */
+input[type="file"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: 100%;
+}
 
-// Flags to handle modal display
-let showSuccessModal = false;
-let showErrorModal = false;
+/* Progress Bar Styling */
+progress {
+    width: 100%;
+    margin-top: 20px;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-// Hide progress bar on page load
-document.addEventListener('DOMContentLoaded', () => {
-    uploader.value = 0; // Reset progress bar value
-    uploader.style.display = 'none'; // Hide progress bar
-    successModal.style.display = "none"; // Hide success modal
-    errorModal.style.display = "none"; // Hide error modal
-});
+progress::-webkit-progress-bar {
+    background-color: #f4f4f4;
+}
 
-// Handle file selection
-const fileInput = document.getElementById('file');
-fileInput.addEventListener('change', (e) => {
-    // Reset flags
-    showSuccessModal = false;
-    showErrorModal = false;
+progress::-webkit-progress-value {
+    background-color: #28a745;
+}
 
-    // Get the file
-    const file = e.target.files[0];
-
-    // Check if a file is selected
-    if (!file) {
-        console.error("No file selected.");
-        showErrorModal = true;
-        displayErrorModal("No file selected.");
-        return;
-    }
-
-    // Show progress bar
-    uploader.style.display = 'block';
-
-    // Create a storage reference
-    const storageRef = ref(storage, 'uploads/' + file.name);
-
-    // Upload file
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    // Update progress bar
-    uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            uploader.value = progress;
-        },
-        (error) => {
-            console.error('Upload failed:', error);
-            showErrorModal = true;
-            displayErrorModal(error.message);  // Show error modal
-            uploader.style.display = 'none'; // Hide progress bar on error
-        },
-        () => {
-            // Upload completed successfully, now get the download URL
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                displayFile(downloadURL, file);
-                showSuccessModal = true;
-                displaySuccessModal(file.name);  // Show success modal
-                uploader.style.display = 'none'; // Hide progress bar after success
-            }).catch((error) => {
-                console.error('Failed to get download URL:', error);
-                showErrorModal = true;
-                displayErrorModal(error.message);  // Show error modal if URL retrieval fails
-                uploader.style.display = 'none'; // Hide progress bar on error
-            });
-        }
-    );
-});
+progress::-moz-progress-bar {
+    background-color: #28a745;
+}
 
 
+/* Modals */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+}
 
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
 
+.close-btn:hover,
+.close-btn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-// Function to display the uploaded file (image, video, audio, or link)
-function displayFile(downloadURL, file) {
-    // Clear previous output
-    uploadedFileLink.innerHTML = '';
+/* Success Modal */
+#success-modal .modal-content {
+    border: 1px solid #28a745;
+}
 
-    // Create the copy button container
-    const container = document.createElement('div');
-    container.className = 'copy-url-button';
+#modal-message-success {
+    color: #28a745;
+}
 
-    // Create the span for downloadURL
-    const urlSpan = document.createElement('span');
-    urlSpan.className = 'download-url';
-    urlSpan.textContent = downloadURL;
+/* Error Modal */
+#error-modal .modal-content {
+    border: 1px solid #dc3545;
+}
 
-    // Create the copy button
-    const copyButton = document.createElement('button');
-    copyButton.textContent = 'Copy';
-    copyButton.type = 'button';
-    copyButton.id = 'copyButton';
+#modal-message-error {
+    color: #dc3545;
+}
 
-    // Add event listener to copy the URL
-    copyButton.addEventListener('click', function() {
-        navigator.clipboard.writeText(downloadURL).then(() => {
-            copyButton.textContent = 'Copied'; // Change button text
-            setTimeout(() => {
-                copyButton.textContent = 'Copy'; // Revert to original text after 2 seconds
-            }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-        });
-    });
-
-    // Append the elements to the container only if there's a download URL
-    if (downloadURL) {
-        container.appendChild(urlSpan);
-        container.appendChild(copyButton);
-        uploadedFileLink.appendChild(container);
-        container.style.display = 'flex'; // Show the container
-    } else {
-        container.style.display = 'none'; // Hide the container if no URL
-    }
+/* Uploaded File Display */
+#uploaded-file-link {
+    margin-top: 20px;
 }
 
 
 
 
-// Function to display the success modal with the file name
-function displaySuccessModal(fileName) {
-    if (showSuccessModal) {
-        const modalMessageSuccess = document.getElementById('modal-message-success');
-        modalMessageSuccess.textContent = `File "${fileName}" uploaded successfully!`;
-        successModal.style.display = "block";  // Show the success modal
-    }
+.copy-url-button {
+    display: none;            /* Hide by default */
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f9ff; /* Light grey background */
+    border: 1px solid #ccc;    /* Light grey border */
+    border-radius: 8px;        /* Rounded corners */
+    padding: 9px 12px;        /* Some padding */
+    width: 100%;               /* Full width */
+    box-sizing: border-box;    /* Include padding in width */
 }
 
-// Function to display the error modal with the error message
-function displayErrorModal(errorMessage) {
-    if (showErrorModal) {
-        const modalMessageError = document.getElementById('modal-message-error');
-        modalMessageError.textContent = `Error: ${errorMessage}`;
-        errorModal.style.display = "block";  // Show the error modal
-    }
+.download-url {
+    flex-grow: 1;
+    color: #333;               /* Dark grey text */
+    font-size: 14px;           /* Adjust font size */
+    overflow: hidden;          /* Hide overflow if too long */
+    text-overflow: ellipsis;   /* Add ellipsis for long URLs */
+    white-space: nowrap;       /* Prevent text from wrapping */
+    margin-right: 10px;        /* Space between URL and button */
 }
 
-// Close the modals when the user clicks on the close buttons
-closeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        successModal.style.display = "none";
-        errorModal.style.display = "none";
-    });
-});
+.copy-url-button button {
+    background-color: #ff5eac; /* Green background */
+    border: none;              /* Remove borders */
+    color: white;              /* White text */
+    padding: 8px 16px;         /* Some padding */
+    text-align: center;        /* Center the text */
+    font-size: 14px;           /* Set a default font size */
+    font-weight: semi-bold;         /* Make the text bold */
+    border-radius: 8px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer/hand icon on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
 
-// Close the modals when the user clicks outside of the modal
-window.addEventListener('click', (event) => {
-    if (event.target == successModal) {
-        successModal.style.display = "none";
-    }
-    if (event.target == errorModal) {
-        errorModal.style.display = "none";
-    }
-});
+.copy-url-button button:hover {
+    background-color: red; /* Darker green on hover */
+    transform: scale(1.05);    /* Slightly enlarge on hover */
+}
 
-// Ensure modals are hidden on page load
-document.addEventListener('DOMContentLoaded', () => {
-    successModal.style.display = "none";
-    errorModal.style.display = "none";
-});
+.copy-url-button button:active {
+    background-color: #397d3b; /* Even darker green when clicked */
+    transform: scale(1);       /* Reset the scale */
+}
+
+
+
+
+
+/* From Uiverse.io by Yaya12085 */ 
+.form {
+  background-color: #fff;
+  box-shadow: 0 10px 60px rgb(218, 229, 255);
+  border: 1px solid rgb(159, 159, 160);
+  border-radius: 20px;
+  padding: 2rem .7rem .7rem .7rem;
+  text-align: center;
+  font-size: 1.125rem;
+  max-width: 320px;
+}
+
+.form-title {
+  color: #000000;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.form-paragraph {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: rgb(105, 105, 105);
+}
+
+.drop-container {
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top: 2.1875rem;
+  border-radius: 10px;
+  border: 2px dashed rgb(171, 202, 255);
+  color: #444;
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
+}
+
+.drop-container:hover {
+  background: rgba(0, 140, 255, 0.104);
+  border-color: rgba(17, 17, 17, 0.616);
+}
+
+.drop-container:hover .drop-title {
+  color: #222;
+}
+
+.drop-title {
+  color: #444;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color .2s ease-in-out;
+}
+
+#file {
+  width: 350px;
+  max-width: 100%;
+  color: #444;
+  padding: 2px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #0077ff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+#file::file-selector-button:hover {
+  background: #0011ff;
+}
