@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Your Files</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="upload/styles.css">
+    <link rel="icon" type="image/x-icon" href="upload/favicon.ico">
 </head>
 <body>
 
@@ -26,11 +26,16 @@
         </form>
         <progress value="0" max="100" id="uploader">0%</progress>
         <div id="uploaded-file-link"></div>
-    </div>
+
+
+<div class="copy-url-button">
+    <span class="download-url"></span>
+    <button type="button" id="copyButton">Copy</button>
+</div>
 
 
         
-
+    </div>
 
     <!-- Success Modal Structure -->
     <div id="success-modal" class="modal">
@@ -49,6 +54,6 @@
     </div>
 
     <!-- Include the JavaScript file -->
-    <script type="module" src="app.js"></script>
+    <script type="module" src="upload/app.js"></script>
 </body>
 </html>
